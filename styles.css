@@ -229,7 +229,7 @@ section[data-tone="dark"] .section-head p { color: var(--navy-ink-soft); }
   .nav__links a { padding: 9px 10px; }
   .nav__row { gap: 16px; }
 }
-@media (max-width: 920px) {
+@media (max-width: 960px) {
   .nav__links, .nav__signin { display: none; }
   .nav__menu-btn { display: inline-flex; }
 }
@@ -835,4 +835,91 @@ section[data-tone="dark"] .section-head p { color: var(--navy-ink-soft); }
   .mock-chartrow, .mock-chartrow--split { grid-template-columns: 1fr; }
   .mock-table__row { grid-template-columns: 1fr 1fr; }
   .mock-table__row span:nth-child(3), .mock-table__row span:nth-child(4) { display: none; }
+}
+
+/* ==========================================================================
+   Product demo (dark) — click-to-play: the YouTube player only loads on play
+   ========================================================================== */
+.section.demo { padding: 100px 0; }
+.demo__grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 64px; align-items: center; }
+.demo__copy h2 { font-size: 40px; font-weight: 700; line-height: 1.15; margin-top: 16px; }
+.demo__copy > p { margin-top: 18px; font-size: 16.5px; line-height: 1.7; color: var(--navy-ink-soft); }
+.demo__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.demo__copy .demo__note { margin-top: 16px; font-size: 12.5px; color: var(--navy-ink-muted); }
+
+.demo__device { box-shadow: var(--shadow-lg), 0 0 0 1px rgba(37, 99, 235, 0.10), 0 30px 70px -24px rgba(37, 99, 235, 0.35); }
+.demo__stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background:
+    radial-gradient(420px 240px at 80% 0%, rgba(37, 99, 235, 0.35), transparent 70%),
+    radial-gradient(360px 220px at 0% 100%, rgba(14, 165, 233, 0.16), transparent 70%),
+    var(--navy-950);
+  overflow: hidden;
+}
+.demo__thumb, .demo__stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.demo__thumb { object-fit: cover; z-index: 1; }
+.demo__stage.is-playing .demo__thumb,
+.demo__stage.is-playing .demo__mark,
+.demo__stage.is-playing .demo__play,
+.demo__stage.is-playing .demo__label { display: none; }
+/* .device img sets width:100% for the product mockups, so the mark needs a more specific size */
+.demo__stage .demo__mark { position: absolute; left: 50%; top: 29%; width: 48px; height: 48px; transform: translate(-50%, -50%); opacity: 0.4; }
+.demo__stage::after { content: ""; position: absolute; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(6, 10, 20, 0) 45%, rgba(6, 10, 20, 0.72)); pointer-events: none; }
+.demo__stage.is-playing::after { display: none; }
+.demo__play {
+  position: absolute; left: 50%; top: 50%; z-index: 2;
+  width: 76px; height: 76px; margin: -38px 0 0 -38px;
+  border: none; border-radius: 999px;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--sapphire-light), var(--sapphire));
+  box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.22), 0 18px 36px -10px rgba(29, 78, 216, 0.75);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.demo__play svg { width: 28px; height: 28px; margin-left: 3px; }
+.demo__play:hover { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(37, 99, 235, 0.25), 0 22px 40px -10px rgba(29, 78, 216, 0.85); }
+.demo__play:focus-visible { outline-color: var(--cyan); outline-offset: 5px; border-radius: 999px; }
+.demo__label { position: absolute; left: 18px; bottom: 16px; z-index: 2; font-family: var(--font-data); font-size: 12px; color: var(--white); padding: 6px 11px; border-radius: 999px; background: rgba(6, 10, 20, 0.6); border: 1px solid var(--navy-line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+
+@media (max-width: 960px) {
+  .demo__grid { grid-template-columns: 1fr; gap: 44px; }
+}
+@media (max-width: 860px) { .section.demo { padding: 72px 0; } }
+@media (max-width: 640px) {
+  .demo__copy h2 { font-size: 30px; }
+  .demo__cta .btn { flex: 1 1 100%; }
+  .demo__stage .demo__mark { display: none; }
+  .demo__play { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+  .demo__label { left: 12px; bottom: 12px; }
+}
+
+/* ==========================================================================
+   Assistant launcher (panel styles live in assistant.css, loaded on demand)
+   ========================================================================== */
+.assistant-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 46px;
+  padding: 0 18px 0 12px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease), opacity 0.2s var(--ease);
+}
+.assistant-launcher img { width: 22px; height: 22px; }
+.assistant-launcher:hover { border-color: var(--sapphire); box-shadow: var(--shadow-md), 0 0 0 3px rgba(37, 99, 235, 0.10); transform: translateY(-1px); }
+.assistant-launcher.is-hidden { opacity: 0; pointer-events: none; transform: translateY(8px); }
+@media (max-width: 640px) {
+  .assistant-launcher { right: 14px; bottom: 14px; }
 }

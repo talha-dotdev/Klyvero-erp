@@ -62,6 +62,57 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
   document.querySelectorAll(".sr").forEach(el => revealObserver.observe(el));
 
+  /* ---- Product demo: the YouTube player is only created when the visitor presses play ---- */
+  const demoStage = document.getElementById("demoStage");
+  const demoPlay = document.getElementById("demoPlay");
+  const demoThumb = document.getElementById("demoThumb");
+  if (demoStage && demoPlay) {
+    const VIDEO_ID = "3PQWCqi0TcE";
+    // maxresdefault doesn't exist for every video; fall back to a smaller frame, then to the branded stage.
+    if (demoThumb) {
+      const fallbacks = ["sddefault", "hqdefault"];
+      const tooSmall = () => demoThumb.naturalWidth && demoThumb.naturalWidth <= 120; // YouTube's grey "missing" placeholder
+      const next = () => {
+        const f = fallbacks.shift();
+        if (f) demoThumb.src = "https://i.ytimg.com/vi/" + VIDEO_ID + "/" + f + ".jpg";
+        else demoThumb.remove();
+      };
+      demoThumb.addEventListener("error", next);
+      demoThumb.addEventListener("load", () => { if (tooSmall()) next(); });
+    }
+    demoPlay.addEventListener("click", () => {
+      const frame = document.createElement("iframe");
+      frame.src = "https://www.youtube-nocookie.com/embed/" + VIDEO_ID + "?autoplay=1&rel=0&playsinline=1";
+      frame.title = "Klyvero ERP product demo";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      frame.allowFullscreen = true;
+      frame.referrerPolicy = "strict-origin-when-cross-origin";
+      demoStage.classList.add("is-playing");
+      demoStage.appendChild(frame);
+    });
+  }
+
+  /* ---- Klyvero Assistant: nothing loads until the visitor engages ---- */
+  const asstBtn = document.getElementById("assistantLauncher");
+  if (asstBtn) {
+    let asstLoad = null;
+    const loadAsst = () => asstLoad || (asstLoad = new Promise((resolve, reject) => {
+      const css = document.createElement("link");
+      css.rel = "stylesheet"; css.href = "assistant.css";
+      document.head.appendChild(css);
+      const js = document.createElement("script");
+      js.src = "assistant.js"; js.onload = resolve;
+      js.onerror = () => { asstLoad = null; reject(new Error("assistant failed to load")); };
+      document.body.appendChild(js);
+    }));
+    ["pointerenter", "focus"].forEach(ev => asstBtn.addEventListener(ev, () => { loadAsst().catch(() => {}); }, { once: true }));
+    asstBtn.addEventListener("click", () => {
+      loadAsst()
+        .then(() => window.KlyveroAssistant.toggle(asstBtn))
+        .catch(() => { window.location.hash = "#contact"; }); // graceful fallback: take the visitor to the Contact section
+    });
+  }
+
   /* ---- Hero entrance (single orchestrated moment, on load) ---- */
   requestAnimationFrame(() => {
     setTimeout(() => {
